@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from public directory
-app.use(express.static(path.join(__dirname, '../public')));
+
 
 // In-memory storage (replace with database in production)
 const memberships = [];
@@ -26,7 +26,7 @@ const bookings = [];
 
 // Home route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.send("Backend is Running");
 });
 
 // Membership registration endpoint
