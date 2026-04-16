@@ -241,6 +241,55 @@ process.on('SIGINT', () => {
 
 
 
+// Store dashboard members
+let members = [];
+
+// Add member
+app.post("/api/members", (req, res) => {
+    const { name, fee } = req.body;
+
+    const member = {
+        id: Date.now(),
+        name,
+        fee,
+        paid: false
+    };
+
+    members.push(member);
+    res.json(member);
+});
+
+// Get members
+app.get("/api/members", (req, res) => {
+    res.json(members);
+});
+
+// Mark paid
+app.put("/api/members/:id/pay", (req, res) => {
+    const member = members.find(m => m.id == req.params.id);
+    if (!member) return res.status(404).send("Not found");
+
+    member.paid = true;
+    res.json(member);
+});
+
+// Delete member
+app.delete("/api/members/:id", (req, res) => {
+    members = members.filter(m => m.id != req.params.id);
+    res.json({ success: true });
+});
+
+// Revenue
+app.get("/api/revenue", (req, res) => {
+    const revenue = members
+        .filter(m => m.paid)
+        .reduce((sum, m) => sum + m.fee, 0);
+
+    res.json({ revenue });
+});
+
+
+
 
 
 
