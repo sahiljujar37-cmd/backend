@@ -14,7 +14,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_PASSWORD = "1234";
 // Serve static files from public directory
 
 
@@ -150,6 +151,23 @@ app.post('/api/booking', (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Server error. Please try again later.'
+        });
+    }
+});
+
+
+app.post('/api/admin/login', (req, res) => {
+    const { email, password } = req.body;
+
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        res.json({
+            success: true,
+            message: "Login successful"
+        });
+    } else {
+        res.status(401).json({
+            success: false,
+            message: "Invalid email or password"
         });
     }
 });
