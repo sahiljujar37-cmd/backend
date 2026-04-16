@@ -239,13 +239,6 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-const ADMIN_EMAIL = "admin@gmail.com";
-const ADMIN_PASSWORD = "1234";
-
-
-
-
-
 
 
 
