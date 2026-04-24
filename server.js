@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 
@@ -15,8 +14,8 @@ const ADMIN_EMAIL = "admin@gmail.com";
 const ADMIN_PASSWORD = "1234";
 
 /* ================= DATABASE (IN-MEMORY) ================= */
-const memberships = [];
-const bookings = [];
+let memberships = [];
+let bookings = [];
 
 /* ================= HOME ================= */
 app.get('/', (req, res) => {
@@ -28,65 +27,51 @@ app.post('/api/admin/login', (req, res) => {
     const { email, password } = req.body;
 
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        return res.json({ success: true, message: "Login successful" });
+        return res.json({ success: true });
     }
 
-    res.status(401).json({ success: false, message: "Invalid email or password" });
+    res.status(401).json({ success: false });
 });
 
 /* ================= MEMBERSHIP CREATE ================= */
 app.post('/api/membership', (req, res) => {
-    try {
-        const { name, email, phone, startDate, plan, price } = req.body;
+    const { name, email, phone, startDate, plan, price } = req.body;
 
-        if (!name || !email || !phone || !startDate || !plan || !price) {
-            return res.status(400).json({ success: false, message: 'All fields are required' });
-        }
-
-        const existing = memberships.find(m => m.email === email);
-        if (existing) {
-            return res.status(400).json({ success: false, message: 'Email already registered' });
-        }
-
-        const membership = {
-            id: Date.now().toString(),
-            name,
-            email,
-            phone,
-            startDate,
-            plan,
-            price,
-            status: "Pending",
-            createdAt: new Date().toISOString()
-        };
-
-        memberships.push(membership);
-
-        res.status(201).json({
-            success: true,
-            message: `Thank you ${name}! Membership created.`,
-            data: membership
-        });
-
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error' });
+    if (!name || !email || !phone || !startDate || !plan || !price) {
+        return res.status(400).json({ success: false, message: "All fields required" });
     }
+
+    const membership = {
+        _id: Date.now().toString(), // ✅ FIXED
+        name,
+        email,
+        phone,
+        startDate,
+        plan,
+        price,
+        status: "Pending",
+        createdAt: new Date().toISOString()
+    };
+
+    memberships.push(membership);
+
+    res.json({ success: true, data: membership });
 });
 
-/* ================= GET MEMBERSHIPS ================= */
+/* ================= GET MEMBERS ================= */
 app.get('/api/memberships', (req, res) => {
     res.json({ success: true, data: memberships });
 });
 
-/* ================= UPDATE MEMBER (PAID) ================= */
+/* ================= UPDATE STATUS ================= */
 app.put('/api/memberships/:id', (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const member = memberships.find(m => m.id === id);
+    const member = memberships.find(m => m._id === id); // ✅ FIXED
 
     if (!member) {
-        return res.status(404).json({ success: false, message: "Member not found" });
+        return res.status(404).json({ success: false, message: "Not found" });
     }
 
     member.status = status;
@@ -98,7 +83,7 @@ app.put('/api/memberships/:id', (req, res) => {
 app.delete('/api/memberships/:id', (req, res) => {
     const { id } = req.params;
 
-    const index = memberships.findIndex(m => m.id === id);
+    const index = memberships.findIndex(m => m._id === id); // ✅ FIXED
 
     if (index === -1) {
         return res.status(404).json({ success: false, message: "Not found" });
@@ -106,41 +91,30 @@ app.delete('/api/memberships/:id', (req, res) => {
 
     memberships.splice(index, 1);
 
-    res.json({ success: true, message: "Member deleted" });
+    res.json({ success: true });
 });
 
-/* ================= BOOKING CREATE ================= */
+/* ================= CREATE BOOKING ================= */
 app.post('/api/booking', (req, res) => {
-    try {
-        const { name, email, phone, service, date, message } = req.body;
+    const { name, email, phone, service, date } = req.body;
 
-        if (!name || !email || !phone || !service || !date) {
-            return res.status(400).json({ success: false, message: 'All fields required' });
-        }
-
-        const booking = {
-            id: Date.now().toString(),
-            name,
-            email,
-            phone,
-            service,
-            date,
-            message: message || '',
-            status: "pending",
-            createdAt: new Date().toISOString()
-        };
-
-        bookings.push(booking);
-
-        res.status(201).json({
-            success: true,
-            message: `Booking created`,
-            data: booking
-        });
-
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error' });
+    if (!name || !email || !phone || !service || !date) {
+        return res.status(400).json({ success: false });
     }
+
+    const booking = {
+        _id: Date.now().toString(), // ✅ FIXED
+        name,
+        email,
+        phone,
+        service,
+        date,
+        createdAt: new Date().toISOString()
+    };
+
+    bookings.push(booking);
+
+    res.json({ success: true, data: booking });
 });
 
 /* ================= GET BOOKINGS ================= */
@@ -152,23 +126,18 @@ app.get('/api/bookings', (req, res) => {
 app.delete('/api/bookings/:id', (req, res) => {
     const { id } = req.params;
 
-    const index = bookings.findIndex(b => b.id === id);
+    const index = bookings.findIndex(b => b._id === id); // ✅ FIXED
 
     if (index === -1) {
-        return res.status(404).json({ success: false, message: "Not found" });
+        return res.status(404).json({ success: false });
     }
 
     bookings.splice(index, 1);
 
-    res.json({ success: true, message: "Booking deleted" });
-});
-
-/* ================= HEALTH ================= */
-app.get('/api/health', (req, res) => {
-    res.json({ success: true, message: "Server running" });
+    res.json({ success: true });
 });
 
 /* ================= START ================= */
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log("Server running on port " + PORT);
 });
