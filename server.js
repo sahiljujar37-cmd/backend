@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express'); // ✅ FIXED
 const cors = require('cors');
 
 const app = express();
@@ -42,7 +42,7 @@ app.post('/api/membership', (req, res) => {
     }
 
     const membership = {
-        _id: Date.now().toString(), // ✅ FIXED
+        _id: Date.now().toString(),
         name,
         email,
         phone,
@@ -55,16 +55,19 @@ app.post('/api/membership', (req, res) => {
 
     memberships.push(membership);
 
-    res.json({ success: true, data: membership });
+    res.json({
+        success: true,
+        message: `Thank you ${name}! Membership created successfully ✅`,
+        data: membership
+    });
 });
 
 /* ================= GET MEMBERS ================= */
 app.get('/api/memberships', (req, res) => {
     res.json({
-    success: true,
-    message: `Thank you ${name}! Membership created successfully ✅`,
-    data: booking
-});
+        success: true,
+        data: memberships
+    });
 });
 
 /* ================= UPDATE STATUS ================= */
@@ -72,7 +75,7 @@ app.put('/api/memberships/:id', (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const member = memberships.find(m => m._id === id); // ✅ FIXED
+    const member = memberships.find(m => m._id === id);
 
     if (!member) {
         return res.status(404).json({ success: false, message: "Not found" });
@@ -87,7 +90,7 @@ app.put('/api/memberships/:id', (req, res) => {
 app.delete('/api/memberships/:id', (req, res) => {
     const { id } = req.params;
 
-    const index = memberships.findIndex(m => m._id === id); // ✅ FIXED
+    const index = memberships.findIndex(m => m._id === id);
 
     if (index === -1) {
         return res.status(404).json({ success: false, message: "Not found" });
@@ -103,11 +106,11 @@ app.post('/api/booking', (req, res) => {
     const { name, email, phone, service, date } = req.body;
 
     if (!name || !email || !phone || !service || !date) {
-        return res.status(400).json({ success: false });
+        return res.status(400).json({ success: false, message: "All fields required" });
     }
 
     const booking = {
-        _id: Date.now().toString(), // ✅ FIXED
+        _id: Date.now().toString(),
         name,
         email,
         phone,
@@ -118,26 +121,29 @@ app.post('/api/booking', (req, res) => {
 
     bookings.push(booking);
 
-    res.json({ success: true, data: booking });
+    res.json({
+        success: true,
+        message: `Thank you ${name}! Booking created successfully ✅`,
+        data: booking
+    });
 });
 
 /* ================= GET BOOKINGS ================= */
 app.get('/api/bookings', (req, res) => {
     res.json({
-    success: true,
-    message:`Thank you ${name}! Booking created successfully ✅`,
-    data: booking
-});
+        success: true,
+        data: bookings
+    });
 });
 
 /* ================= DELETE BOOKING ================= */
 app.delete('/api/bookings/:id', (req, res) => {
     const { id } = req.params;
 
-    const index = bookings.findIndex(b => b._id === id); // ✅ FIXED
+    const index = bookings.findIndex(b => b._id === id);
 
     if (index === -1) {
-        return res.status(404).json({ success: false });
+        return res.status(404).json({ success: false, message: "Not found" });
     }
 
     bookings.splice(index, 1);
