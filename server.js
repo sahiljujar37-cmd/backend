@@ -60,7 +60,11 @@ app.post('/api/membership', (req, res) => {
 
 /* ================= GET MEMBERS ================= */
 app.get('/api/memberships', (req, res) => {
-    res.json({ success: true, data: memberships });
+    res.json({
+    success: true,
+    message: `Thank you ${name}! Membership created successfully ✅`,
+    data: booking
+});
 });
 
 /* ================= UPDATE STATUS ================= */
@@ -119,7 +123,11 @@ app.post('/api/booking', (req, res) => {
 
 /* ================= GET BOOKINGS ================= */
 app.get('/api/bookings', (req, res) => {
-    res.json({ success: true, data: bookings });
+    res.json({
+    success: true,
+    message:`Thank you ${name}! Booking created successfully ✅`,
+    data: booking
+});
 });
 
 /* ================= DELETE BOOKING ================= */
