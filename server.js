@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ================= ADMIN ================= */
-const ADMIN_EMAIL = "admin@gmail.com";
-const ADMIN_PASSWORD = "1234";
+const ADMIN_EMAIL = "zunjarclub.com";
+const ADMIN_PASSWORD = "zunjarclub07";
 
 /* ================= DATABASE (IN-MEMORY) ================= */
 let memberships = [];
